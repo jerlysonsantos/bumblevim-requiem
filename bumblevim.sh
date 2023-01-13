@@ -13,12 +13,13 @@
 DESTINATION=.venvs
 
 source "./config.sh"
+source "./themes.sh"
 
 # set script path
 export SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
 export DIR="$(dirname "$SCRIPT")"
 
-$CURRENT_LANG=""
+CURRENT_LANG=0
 
 packages() {
     echo black
@@ -665,6 +666,18 @@ vim_backup() {
     fi
 }
 
+select_theme() {
+	PS3="Select your prefere theme:"
+
+	select option in dark; do
+		case $option in 
+		    dark)
+               codedark
+               break;
+			;;
+		esac
+	done
+}
 
 __init__() {
 	PS3="Select your prefere language:"
@@ -675,6 +688,7 @@ __init__() {
                 $CURRENT_LANG = "nodejs"
 				validate_node
 				vim_powerup
+                break;
 				;;
 			python)
                 $CURRENT_LANG = "python"
@@ -682,6 +696,7 @@ __init__() {
         		vim_backup
         		install_venvs
         		vim_powerup
+                break;
 				;;
 
 			quit)
@@ -690,13 +705,14 @@ __init__() {
 		esac
 	done
 			
+    select_theme
 }
 
 case "$1" in
 
     -i | --install)
 	    __init__
-            ;;
+    ;;
 
     -u | --update)
         update_venvs
