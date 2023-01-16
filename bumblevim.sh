@@ -667,7 +667,7 @@ vim_backup() {
 }
 
 select_theme() {
-	PS3="Select your prefere theme:"
+	echo "Select your prefere theme:"
 
 	select option in dark; do
 		case $option in 
