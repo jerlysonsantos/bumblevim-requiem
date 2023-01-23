@@ -41,8 +41,8 @@ cat << EOF > $HOME/.vimrc
 
     " https://github.com/vim-airline/vim-airline
     Plug 'vim-airline/vim-airline'
-
-  	call plug#end()
+ 
+    call plug#end()
 
 	" General configuration
 	" setting horizontal and vertical splits
