@@ -1,0 +1,1319 @@
+# Make sure you use single quotes
+
+write_vimrc() {
+cat << EOF > $HOME/.vimrc
+	syntax on
+	set term=xterm
+	set mouse=a
+	set cursorline
+	set encoding=utf-8
+	set nocompatible
+	set t_Co=256
+
+	call plug#begin('~/.vim/plugged')
+
+	"https://github.com/neoclide/coc.nvim
+	Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+	" https://github.com/preservim/nerdtree
+	Plug 'preservim/nerdtree'
+
+	" https://github.com/mattn/emmet-vim
+	Plug 'mattn/emmet-vim'
+
+	" https://github.com/junegunn/fzf.vim
+	Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+
+	" https://github.com/tpope/vim-fugitive.git
+	Plug 'https://github.com/tpope/vim-fugitive.git'
+
+	" https://github.com/OmniSharp/omnisharp-vim
+	Plug 'OmniSharp/omnisharp-vim'
+
+	" https://github.com/prettier/vim-prettier
+	Plug 'prettier/vim-prettier', { 'do': 'npm install --frozen-lockfile --production' }
+
+	" https://github.com/editorconfig/editorconfig-vim
+	Plug 'editorconfig/editorconfig-vim'
+
+	" https://github.com/mhinz/vim-signify
+	Plug 'mhinz/vim-signify', { 'tag': 'legacy' }
+
+    " https://github.com/vim-airline/vim-airline
+    Plug 'vim-airline/vim-airline'
+ 
+    call plug#end()
+
+	" General configuration
+	" setting horizontal and vertical splits
+	set splitbelow
+	set splitright
+
+	" Use external vimrc files for plugin sources
+	source $HOME/.vim/vimrc/coc.vimrc
+	source $HOME/.vim/vimrc/python.vimrc
+	source $HOME/.vim/vimrc/nerdtree.vimrc
+	source $HOME/.vim/vimrc/web.vimrc
+	source $HOME/.vim/vimrc/bash.vimrc
+	source $HOME/.vim/vimrc/autoclose.vimrc
+
+	let g:prettier#autoformat = 1
+	let g:prettier#autoformat_require_pragma = 0
+
+EOF
+}
+
+
+codedark() {
+    if [[ ! -d $HOME/.vim/colors ]]
+    then
+        mkdir -p $HOME/.vim/colors
+cat << EOF > $HOME/.vim/colors/codedark.vim
+" Vim Code Dark (color scheme)
+" https://github.com/tomasiser/vim-code-dark
+
+scriptencoding utf-8
+
+set background=dark
+hi clear
+if exists("syntax_on")
+    syntax reset
+endif
+let g:colors_name="codedark"
+
+" Highlighting function (inspiration from https://github.com/chriskempson/base16-vim)
+if &t_Co >= 256
+    let g:codedark_term256=1
+elseif !exists("g:codedark_term256")
+    let g:codedark_term256=0
+endif
+fun! <sid>hi(group, fg, bg, attr, sp)
+  if !empty(a:fg)
+    exec "hi " . a:group . " guifg=" . a:fg.gui . " ctermfg=" . (g:codedark_term256 ? a:fg.cterm256 : a:fg.cterm)
+  endif
+  if !empty(a:bg)
+    exec "hi " . a:group . " guibg=" . a:bg.gui . " ctermbg=" . (g:codedark_term256 ? a:bg.cterm256 : a:bg.cterm)
+  endif
+  if a:attr != ""
+    exec "hi " . a:group . " gui=" . a:attr . " cterm=" . a:attr
+  endif
+  if !empty(a:sp)
+    exec "hi " . a:group . " guisp=" . a:sp.gui
+  endif
+endfun
+
+" ------------------
+" Color definitions:
+" ------------------
+
+" Terminal colors (base16):
+let s:cterm00 = "00"
+let s:cterm03 = "08"
+let s:cterm05 = "07"
+let s:cterm07 = "15"
+let s:cterm08 = "01"
+let s:cterm0A = "03"
+let s:cterm0B = "02"
+let s:cterm0C = "06"
+let s:cterm0D = "04"
+let s:cterm0E = "05"
+if exists('base16colorspace') && base16colorspace == "256"
+  let s:cterm01 = "18"
+  let s:cterm02 = "19"
+  let s:cterm04 = "20"
+  let s:cterm06 = "21"
+  let s:cterm09 = "16"
+  let s:cterm0F = "17"
+else
+  let s:cterm01 = "00"
+  let s:cterm02 = "08"
+  let s:cterm04 = "07"
+  let s:cterm06 = "07"
+  let s:cterm09 = "06"
+  let s:cterm0F = "03"
+endif
+
+" General appearance colors:
+" (some of them may be unused)
+
+let s:cdNone = {'gui': 'NONE', 'cterm': 'NONE', 'cterm256': 'NONE'}
+let s:cdFront = {'gui': '#D4D4D4', 'cterm': s:cterm05, 'cterm256': '188'}
+" let s:cdBack = {'gui': '#1E1E1E', 'cterm': s:cterm00, 'cterm256': '234'}
+let s:cdBack = {'gui': 'NONE', 'cterm': s:cterm00, 'cterm256': 'NONE'}
+
+let s:cdTabCurrent = {'gui': '#1E1E1E', 'cterm': s:cterm00, 'cterm256': '234'}
+let s:cdTabOther = {'gui': '#2D2D2D', 'cterm': s:cterm01, 'cterm256': '236'}
+let s:cdTabOutside = {'gui': '#252526', 'cterm': s:cterm01, 'cterm256': '235'}
+
+let s:cdLeftDark = {'gui': '#252526', 'cterm': s:cterm01, 'cterm256': '235'}
+let s:cdLeftMid = {'gui': '#373737', 'cterm': s:cterm03, 'cterm256': '237'}
+let s:cdLeftLight = {'gui': '#3F3F46', 'cterm': s:cterm03, 'cterm256': '238'}
+
+let s:cdPopupFront = {'gui': '#BBBBBB', 'cterm': s:cterm06, 'cterm256': '250'}
+let s:cdPopupBack = {'gui': '#2D2D30', 'cterm': s:cterm01, 'cterm256': '236'}
+let s:cdPopupHighlightBlue = {'gui': '#073655', 'cterm': s:cterm0D, 'cterm256': '24'}
+let s:cdPopupHighlightGray = {'gui': '#3D3D40', 'cterm': s:cterm03, 'cterm256': '237'}
+
+let s:cdSplitLight = {'gui': '#898989', 'cterm': s:cterm04, 'cterm256': '245'}
+let s:cdSplitDark = {'gui': '#444444', 'cterm': s:cterm03, 'cterm256': '238'}
+let s:cdSplitThumb = {'gui': '#424242', 'cterm': s:cterm04, 'cterm256': '238'}
+
+let s:cdCursorDarkDark = {'gui': '#222222', 'cterm': s:cterm01, 'cterm256': '235'}
+let s:cdCursorDark = {'gui': '#51504F', 'cterm': s:cterm03, 'cterm256': '239'}
+let s:cdCursorLight = {'gui': '#AEAFAD', 'cterm': s:cterm04, 'cterm256': '145'}
+let s:cdSelection = {'gui': '#264F78', 'cterm': s:cterm03, 'cterm256': '24'}
+let s:cdLineNumber = {'gui': '#5A5A5A', 'cterm': s:cterm04, 'cterm256': '240'}
+
+let s:cdDiffRedDark = {'gui': '#4B1818', 'cterm': s:cterm08, 'cterm256': '52'}
+let s:cdDiffRedLight = {'gui': '#6F1313', 'cterm': s:cterm08, 'cterm256': '52'}
+let s:cdDiffRedLightLight = {'gui': '#FB0101', 'cterm': s:cterm08, 'cterm256': '09'}
+let s:cdDiffGreenDark = {'gui': '#373D29', 'cterm': s:cterm0B, 'cterm256': '237'}
+let s:cdDiffGreenLight = {'gui': '#4B5632', 'cterm': s:cterm09, 'cterm256': '58'}
+
+let s:cdSearchCurrent = {'gui': '#4B5632', 'cterm': s:cterm09, 'cterm256': '58'}
+let s:cdSearch = {'gui': '#264F78', 'cterm': s:cterm03, 'cterm256': '24'}
+
+" Syntax colors:
+
+if !exists("g:codedark_conservative")
+    let g:codedark_conservative=0
+endif
+
+let s:cdGray = {'gui': '#808080', 'cterm': s:cterm04, 'cterm256': '08'}
+let s:cdViolet = {'gui': '#646695', 'cterm': s:cterm04, 'cterm256': '60'}
+let s:cdBlue = {'gui': '#569CD6', 'cterm': s:cterm0D, 'cterm256': '75'}
+let s:cdDarkBlue = {'gui': '#223E55', 'cterm': s:cterm0D, 'cterm256': '73'}
+let s:cdLightBlue = {'gui': '#9CDCFE', 'cterm': s:cterm0C, 'cterm256': '117'}
+if g:codedark_conservative | let s:cdLightBlue = s:cdFront | endif
+let s:cdGreen = {'gui': '#6A9955', 'cterm': s:cterm0B, 'cterm256': '65'}
+let s:cdBlueGreen = {'gui': '#4EC9B0', 'cterm': s:cterm0F, 'cterm256': '43'}
+let s:cdLightGreen = {'gui': '#B5CEA8', 'cterm': s:cterm09, 'cterm256': '151'}
+let s:cdRed = {'gui': '#F44747', 'cterm': s:cterm08, 'cterm256': '203'}
+let s:cdOrange = {'gui': '#CE9178', 'cterm': s:cterm0F, 'cterm256': '173'}
+let s:cdLightRed = {'gui': '#D16969', 'cterm': s:cterm08, 'cterm256': '167'}
+if g:codedark_conservative | let s:cdLightRed = s:cdOrange | endif
+let s:cdYellowOrange = {'gui': '#D7BA7D', 'cterm': s:cterm0A, 'cterm256': '179'}
+let s:cdYellow = {'gui': '#DCDCAA', 'cterm': s:cterm0A, 'cterm256': '187'}
+if g:codedark_conservative | let s:cdYellow = s:cdFront | endif
+let s:cdPink = {'gui': '#C586C0', 'cterm': s:cterm0E, 'cterm256': '176'}
+if g:codedark_conservative | let s:cdPink = s:cdBlue | endif
+
+" Vim editor colors
+"    <sid>hi(GROUP, FOREGROUND, BACKGROUND, ATTRIBUTE, SPECIAL)
+" call <sid>hi('Normal', s:cdFront, s:cdBack, 'none', {})
+call <sid>hi('Normal', s:cdFront, s:cdBack, 'none', {})
+call <sid>hi('ColorColumn', {}, s:cdCursorDarkDark, 'none', {})
+call <sid>hi('Cursor', s:cdCursorDark, s:cdCursorLight, 'none', {})
+call <sid>hi('CursorLine', {}, s:cdCursorDarkDark, 'none', {})
+call <sid>hi('CursorColumn', {}, s:cdCursorDarkDark, 'none', {})
+call <sid>hi('Directory', s:cdBlue, s:cdBack, 'none', {})
+call <sid>hi('DiffAdd', {}, s:cdDiffGreenLight, 'none', {})
+call <sid>hi('DiffChange', {}, s:cdDiffRedDark, 'none', {})
+call <sid>hi('DiffDelete', {}, s:cdDiffRedLight, 'none', {})
+call <sid>hi('DiffText', {}, s:cdDiffRedLight, 'none', {})
+call <sid>hi('EndOfBuffer', s:cdLineNumber, s:cdBack, 'none', {})
+call <sid>hi('ErrorMsg', s:cdRed, s:cdBack, 'none', {})
+call <sid>hi('VertSplit', s:cdSplitDark, s:cdBack, 'none', {})
+call <sid>hi('Folded', s:cdLeftLight, s:cdLeftDark, 'underline', {})
+call <sid>hi('FoldColumn', s:cdLineNumber, s:cdBack, 'none', {})
+call <sid>hi('SignColumn', {}, s:cdBack, 'none', {})
+call <sid>hi('IncSearch', s:cdNone, s:cdSearchCurrent, 'none', {})
+call <sid>hi('LineNr', s:cdLineNumber, s:cdBack, 'none', {})
+call <sid>hi('CursorLineNr', s:cdPopupFront, s:cdBack, 'none', {})
+call <sid>hi('MatchParen', s:cdNone, s:cdCursorDark, 'none', {})
+call <sid>hi('ModeMsg', s:cdFront, s:cdLeftDark, 'none', {})
+call <sid>hi('MoreMsg', s:cdFront, s:cdLeftDark, 'none', {})
+call <sid>hi('NonText', s:cdLineNumber, s:cdBack, 'none', {})
+call <sid>hi('Pmenu', s:cdPopupFront, s:cdPopupBack, 'none', {})
+call <sid>hi('PmenuSel', s:cdPopupFront, s:cdPopupHighlightBlue, 'none', {})
+call <sid>hi('PmenuSbar', {}, s:cdPopupHighlightGray, 'none', {})
+call <sid>hi('PmenuThumb', {}, s:cdPopupFront, 'none', {})
+call <sid>hi('Question', s:cdBlue, s:cdBack, 'none', {})
+call <sid>hi('Search', s:cdNone, s:cdSearch, 'none', {})
+call <sid>hi('SpecialKey', s:cdBlue, s:cdNone, 'none', {})
+call <sid>hi('StatusLine', s:cdFront, s:cdLeftMid, 'none', {})
+call <sid>hi('StatusLineNC', s:cdFront, s:cdLeftDark, 'none', {})
+call <sid>hi('TabLine', s:cdFront, s:cdTabOther, 'none', {})
+call <sid>hi('TabLineFill', s:cdFront, s:cdTabOutside, 'none', {})
+call <sid>hi('TabLineSel', s:cdFront, s:cdTabCurrent, 'none', {})
+call <sid>hi('Title', s:cdNone, s:cdNone, 'bold', {})
+call <sid>hi('Visual', s:cdNone, s:cdSelection, 'none', {})
+call <sid>hi('VisualNOS', s:cdNone, s:cdSelection, 'none', {})
+call <sid>hi('WarningMsg', s:cdOrange, s:cdBack, 'none', {})
+call <sid>hi('WildMenu', s:cdNone, s:cdSelection, 'none', {})
+
+" Legacy groups for official git.vim and diff.vim syntax
+hi! link diffAdded DiffAdd
+hi! link diffChanged DiffChange
+hi! link diffRemoved DiffDelete
+
+call <sid>hi('Comment', s:cdGreen, {}, 'none', {})
+
+call <sid>hi('Constant', s:cdBlue, {}, 'none', {})
+call <sid>hi('String', s:cdOrange, {}, 'none', {})
+call <sid>hi('Character', s:cdOrange, {}, 'none', {})
+call <sid>hi('Number', s:cdLightGreen, {}, 'none', {})
+call <sid>hi('Boolean', s:cdBlue, {}, 'none', {})
+call <sid>hi('Float', s:cdLightGreen, {}, 'none', {})
+
+call <sid>hi('Identifier', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('Function', s:cdYellow, {}, 'none', {})
+
+call <sid>hi('Statement', s:cdPink, {}, 'none', {})
+call <sid>hi('Conditional', s:cdPink, {}, 'none', {})
+call <sid>hi('Repeat', s:cdPink, {}, 'none', {})
+call <sid>hi('Label', s:cdPink, {}, 'none', {})
+call <sid>hi('Operator', s:cdFront, {}, 'none', {})
+call <sid>hi('Keyword', s:cdPink, {}, 'none', {})
+call <sid>hi('Exception', s:cdPink, {}, 'none', {})
+
+call <sid>hi('PreProc', s:cdPink, {}, 'none', {})
+call <sid>hi('Include', s:cdPink, {}, 'none', {})
+call <sid>hi('Define', s:cdPink, {}, 'none', {})
+call <sid>hi('Macro', s:cdPink, {}, 'none', {})
+call <sid>hi('PreCondit', s:cdPink, {}, 'none', {})
+
+call <sid>hi('Type', s:cdBlue, {}, 'none', {})
+call <sid>hi('StorageClass', s:cdBlue, {}, 'none', {})
+call <sid>hi('Structure', s:cdBlue, {}, 'none', {})
+call <sid>hi('Typedef', s:cdBlue, {}, 'none', {})
+
+call <sid>hi('Special', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('SpecialChar', s:cdFront, {}, 'none', {})
+call <sid>hi('Tag', s:cdFront, {}, 'none', {})
+call <sid>hi('Delimiter', s:cdFront, {}, 'none', {})
+call <sid>hi('SpecialComment', s:cdGreen, {}, 'none', {})
+call <sid>hi('Debug', s:cdFront, {}, 'none', {})
+
+call <sid>hi('Underlined', s:cdNone, {}, 'underline', {})
+call <sid>hi("Conceal", s:cdFront, s:cdBack, 'none', {})
+
+call <sid>hi('Ignore', s:cdFront, {}, 'none', {})
+
+call <sid>hi('Error', s:cdRed, s:cdBack, 'undercurl', s:cdRed)
+
+call <sid>hi('Todo', s:cdNone, s:cdLeftMid, 'none', {})
+
+call <sid>hi('SpellBad', s:cdRed, s:cdBack, 'undercurl', s:cdRed)
+call <sid>hi('SpellCap', s:cdRed, s:cdBack, 'undercurl', s:cdRed)
+call <sid>hi('SpellRare', s:cdRed, s:cdBack, 'undercurl', s:cdRed)
+call <sid>hi('SpellLocal', s:cdRed, s:cdBack, 'undercurl', s:cdRed)
+
+
+" Neovim Treesitter:
+call <sid>hi('TSError', s:cdRed, {}, 'none', {})
+call <sid>hi('TSPunctDelimiter', s:cdFront, {}, 'none', {})
+call <sid>hi('TSPunctBracket', s:cdFront, {}, 'none', {})
+call <sid>hi('TSPunctSpecial', s:cdFront, {}, 'none', {})
+" Constant
+call <sid>hi('TSConstant', s:cdYellow, {}, 'none', {})
+call <sid>hi('TSConstBuiltin', s:cdBlue, {}, 'none', {})
+call <sid>hi('TSConstMacro', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('TSStringRegex', s:cdOrange, {}, 'none', {})
+call <sid>hi('TSString', s:cdOrange, {}, 'none', {})
+call <sid>hi('TSStringEscape', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('TSCharacter', s:cdOrange, {}, 'none', {})
+call <sid>hi('TSNumber', s:cdLightGreen, {}, 'none', {})
+call <sid>hi('TSBoolean', s:cdBlue, {}, 'none', {})
+call <sid>hi('TSFloat', s:cdLightGreen, {}, 'none', {})
+call <sid>hi('TSAnnotation', s:cdYellow, {}, 'none', {})
+call <sid>hi('TSAttribute', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('TSNamespace', s:cdBlueGreen, {}, 'none', {})
+" Functions
+call <sid>hi('TSFuncBuiltin', s:cdYellow, {}, 'none', {})
+call <sid>hi('TSFunction', s:cdYellow, {}, 'none', {})
+call <sid>hi('TSFuncMacro', s:cdYellow, {}, 'none', {})
+call <sid>hi('TSParameter', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('TSParameterReference', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('TSMethod', s:cdYellow, {}, 'none', {})
+call <sid>hi('TSField', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('TSProperty', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('TSConstructor', s:cdBlueGreen, {}, 'none', {})
+" Keywords
+call <sid>hi('TSConditional', s:cdPink, {}, 'none', {})
+call <sid>hi('TSRepeat', s:cdPink, {}, 'none', {})
+call <sid>hi('TSLabel', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('TSKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('TSKeywordFunction', s:cdPink, {}, 'none', {})
+call <sid>hi('TSKeywordOperator', s:cdBlue, {}, 'none', {})
+call <sid>hi('TSOperator', s:cdFront, {}, 'none', {})
+call <sid>hi('TSException', s:cdPink, {}, 'none', {})
+call <sid>hi('TSType', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('TSTypeBuiltin', s:cdBlue, {}, 'none', {})
+call <sid>hi('TSStructure', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('TSInclude', s:cdPink, {}, 'none', {})
+" Variable
+call <sid>hi('TSVariable', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('TSVariableBuiltin', s:cdLightBlue, {}, 'none', {})
+" Text
+call <sid>hi('TSText', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('TSStrong', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('TSEmphasis', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('TSUnderline', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('TSTitle', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('TSLiteral', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('TSURI', s:cdYellowOrange, {}, 'none', {})
+" Tags
+call <sid>hi('TSTag', s:cdBlue, {}, 'none', {})
+call <sid>hi('TSTagDelimiter', s:cdGray, {}, 'none', {})
+
+" Markdown:
+call <sid>hi('markdownBold', s:cdBlue, {}, 'bold', {})
+call <sid>hi('markdownCode', s:cdOrange, {}, 'none', {})
+call <sid>hi('markdownRule', s:cdBlue, {}, 'bold', {})
+call <sid>hi('markdownCodeDelimiter', s:cdOrange, {}, 'none', {})
+call <sid>hi('markdownHeadingDelimiter', s:cdBlue, {}, 'none', {})
+call <sid>hi('markdownFootnote', s:cdOrange, {}, 'none', {})
+call <sid>hi('markdownFootnoteDefinition', s:cdOrange, {}, 'none', {})
+call <sid>hi('markdownUrl', s:cdLightBlue, {}, 'underline', {})
+call <sid>hi('markdownLinkText', s:cdOrange, {}, 'none', {})
+call <sid>hi('markdownEscape', s:cdYellowOrange, {}, 'none', {})
+
+" Asciidoc (for default syntax highlighting)
+call <sid>hi("asciidocAttributeEntry", s:cdYellowOrange, {}, 'none', {})
+call <sid>hi("asciidocAttributeList", s:cdPink, {}, 'none', {})
+call <sid>hi("asciidocAttributeRef", s:cdYellowOrange, {}, 'none', {})
+call <sid>hi("asciidocHLabel", s:cdBlue, {}, 'bold', {})
+call <sid>hi("asciidocListingBlock", s:cdOrange, {}, 'none', {})
+call <sid>hi("asciidocMacroAttributes", s:cdYellowOrange, {}, 'none', {})
+call <sid>hi("asciidocOneLineTitle", s:cdBlue, {}, 'bold', {})
+call <sid>hi("asciidocPassthroughBlock", s:cdBlue, {}, 'none', {})
+call <sid>hi("asciidocQuotedMonospaced", s:cdOrange, {}, 'none', {})
+call <sid>hi("asciidocTriplePlusPassthrough", s:cdYellow, {}, 'none', {})
+call <sid>hi("asciidocMacro", s:cdPink, {}, 'none', {})
+call <sid>hi("asciidocAdmonition", s:cdOrange, {}, 'none', {})
+call <sid>hi("asciidocQuotedEmphasized", s:cdBlue, {}, 'italic', {})
+call <sid>hi("asciidocQuotedEmphasized2", s:cdBlue, {}, 'italic', {})
+call <sid>hi("asciidocQuotedEmphasizedItalic", s:cdBlue, {}, 'italic', {})
+hi! link asciidocBackslash Keyword
+hi! link asciidocQuotedBold markdownBold
+hi! link asciidocQuotedMonospaced2 asciidocQuotedMonospaced
+hi! link asciidocQuotedUnconstrainedBold asciidocQuotedBold
+hi! link asciidocQuotedUnconstrainedEmphasized asciidocQuotedEmphasized
+hi! link asciidocURL markdownUrl
+
+" JSON:
+call <sid>hi('jsonKeyword', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsonEscape', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('jsonNull', s:cdBlue, {}, 'none', {})
+call <sid>hi('jsonBoolean', s:cdBlue, {}, 'none', {})
+
+" HTML:
+call <sid>hi('htmlTag', s:cdGray, {}, 'none', {})
+call <sid>hi('htmlEndTag', s:cdGray, {}, 'none', {})
+call <sid>hi('htmlTagName', s:cdBlue, {}, 'none', {})
+call <sid>hi('htmlSpecialTagName', s:cdBlue, {}, 'none', {})
+call <sid>hi('htmlArg', s:cdLightBlue, {}, 'none', {})
+
+" PHP:
+call <sid>hi('phpStaticClasses', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('phpMethod', s:cdYellow, {}, 'none', {})
+call <sid>hi('phpClass', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('phpFunction', s:cdYellow, {}, 'none', {})
+call <sid>hi('phpInclude', s:cdBlue, {}, 'none', {})
+call <sid>hi('phpUseClass', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('phpRegion', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('phpMethodsVar', s:cdLightBlue, {}, 'none', {})
+
+" CSS:
+call <sid>hi('cssBraces', s:cdFront, {}, 'none', {})
+call <sid>hi('cssInclude', s:cdPink, {}, 'none', {})
+call <sid>hi('cssTagName', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('cssClassName', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('cssPseudoClass', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('cssPseudoClassId', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('cssPseudoClassLang', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('cssIdentifier', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('cssProp', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('cssDefinition', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('cssAttr', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssAttrRegion', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssColor', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssFunction', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssFunctionName', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssVendor', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssValueNumber', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssValueLength', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssUnitDecorators', s:cdOrange, {}, 'none', {})
+call <sid>hi('cssStyle', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('cssImportant', s:cdBlue, {}, 'none', {})
+
+" JavaScript:
+call <sid>hi('jsVariableDef', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsFuncArgs', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsFuncBlock', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsRegexpString', s:cdLightRed, {}, 'none', {})
+call <sid>hi('jsThis', s:cdBlue, {}, 'none', {})
+call <sid>hi('jsOperatorKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('jsDestructuringBlock', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsObjectKey', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsGlobalObjects', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('jsModuleKeyword', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsClassDefinition', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('jsClassKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('jsExtendsKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('jsExportDefault', s:cdPink, {}, 'none', {})
+call <sid>hi('jsFuncCall', s:cdYellow, {}, 'none', {})
+call <sid>hi('jsObjectValue', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsParen', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsObjectProp', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsIfElseBlock', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsParenIfElse', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsSpreadOperator', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('jsSpreadExpression', s:cdLightBlue, {}, 'none', {})
+
+" Typescript:
+call <sid>hi('typescriptLabel', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptExceptions', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptBraces', s:cdFront, {}, 'none', {})
+call <sid>hi('typescriptEndColons', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptParens', s:cdFront, {}, 'none', {})
+call <sid>hi('typescriptDocTags', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptDocComment', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptLogicSymbols', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptImport', s:cdPink, {}, 'none', {})
+call <sid>hi('typescriptBOM', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptVariableDeclaration', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptVariable', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptExport', s:cdPink, {}, 'none', {})
+call <sid>hi('typescriptAliasDeclaration', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptAliasKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptClassName', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptAccessibilityModifier', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptOperator', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptArrowFunc', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptMethodAccessor', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptMember', s:cdYellow, {}, 'none', {})
+call <sid>hi('typescriptTypeReference', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptDefault', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptTemplateSB', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('typescriptArrowFuncArg', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptParamImpl', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptFuncComma', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptCastKeyword', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptCall', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptCase', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptReserved', s:cdPink, {}, 'none', {})
+call <sid>hi('typescriptDefault', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptDecorator', s:cdYellow, {}, 'none', {})
+call <sid>hi('typescriptPredefinedType', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptClassHeritage', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptClassExtends', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptClassKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptBlock', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptDOMDocProp', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptTemplateSubstitution', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptClassBlock', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptFuncCallArg', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptIndexExpr', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptConditionalParen', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptArray', s:cdYellow, {}, 'none', {})
+call <sid>hi('typescriptES6SetProp', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptObjectLiteral', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptTypeParameter', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptEnumKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptEnum', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptLoopParen', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptParenExp', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptModule', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('typescriptAmbientDeclaration', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptModule', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptFuncTypeArrow', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptInterfaceHeritage', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptInterfaceName', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptInterfaceKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptInterfaceExtends', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptGlobal', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('typescriptAsyncFuncKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptFuncKeyword', s:cdBlue, {}, 'none', {})
+call <sid>hi('typescriptGlobalMethod', s:cdYellow, {}, 'none', {})
+call <sid>hi('typescriptPromiseMethod', s:cdYellow, {}, 'none', {})
+
+" XML:
+call <sid>hi('xmlTag', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('xmlTagName', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('xmlEndTag', s:cdBlueGreen, {}, 'none', {})
+
+" Ruby:
+call <sid>hi('rubyClassNameTag', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('rubyClassName', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('rubyModuleName', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('rubyConstant', s:cdBlueGreen, {}, 'none', {})
+
+" Golang:
+call <sid>hi('goPackage', s:cdBlue, {}, 'none', {})
+call <sid>hi('goImport', s:cdBlue, {}, 'none', {})
+call <sid>hi('goVar', s:cdBlue, {}, 'none', {})
+call <sid>hi('goConst', s:cdBlue, {}, 'none', {})
+call <sid>hi('goStatement', s:cdPink, {}, 'none', {})
+call <sid>hi('goType', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('goSignedInts', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('goUnsignedInts', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('goFloats', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('goComplexes', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('goBuiltins', s:cdYellow, {}, 'none', {})
+call <sid>hi('goBoolean', s:cdBlue, {}, 'none', {})
+call <sid>hi('goPredefinedIdentifiers', s:cdBlue, {}, 'none', {})
+call <sid>hi('goTodo', s:cdGreen, {}, 'none', {})
+call <sid>hi('goDeclaration', s:cdBlue, {}, 'none', {})
+call <sid>hi('goDeclType', s:cdBlue, {}, 'none', {})
+call <sid>hi('goTypeDecl', s:cdBlue, {}, 'none', {})
+call <sid>hi('goTypeName', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('goVarAssign', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('goVarDefs', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('goReceiver', s:cdFront, {}, 'none', {})
+call <sid>hi('goReceiverType', s:cdFront, {}, 'none', {})
+call <sid>hi('goFunctionCall', s:cdYellow, {}, 'none', {})
+call <sid>hi('goMethodCall', s:cdYellow, {}, 'none', {})
+call <sid>hi('goSingleDecl', s:cdLightBlue, {}, 'none', {})
+
+" Python:
+call <sid>hi('pythonStatement', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonOperator', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonException', s:cdPink, {}, 'none', {})
+call <sid>hi('pythonExClass', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('pythonBuiltinObj', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('pythonBuiltinType', s:cdBlueGreen, {}, 'none', {})
+call <sid>hi('pythonBoolean', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonNone', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonTodo', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonClassVar', s:cdBlue, {}, 'none', {})
+call <sid>hi('pythonClassDef', s:cdBlueGreen, {}, 'none', {})
+
+" TeX:
+call <sid>hi('texStatement', s:cdBlue, {}, 'none', {})
+call <sid>hi('texBeginEnd', s:cdYellow, {}, 'none', {})
+call <sid>hi('texBeginEndName', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('texOption', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('texBeginEndModifier', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('texDocType', s:cdPink, {}, 'none', {})
+call <sid>hi('texDocTypeArgs', s:cdLightBlue, {}, 'none', {})
+
+" Git:
+call <sid>hi('gitcommitHeader', s:cdGray, {}, 'none', {})
+call <sid>hi('gitcommitOnBranch', s:cdGray, {}, 'none', {})
+call <sid>hi('gitcommitBranch', s:cdPink, {}, 'none', {})
+call <sid>hi('gitcommitComment', s:cdGray, {}, 'none', {})
+call <sid>hi('gitcommitSelectedType', s:cdGreen, {}, 'none', {})
+call <sid>hi('gitcommitSelectedFile', s:cdGreen, {}, 'none', {})
+call <sid>hi('gitcommitDiscardedType', s:cdRed, {}, 'none', {})
+call <sid>hi('gitcommitDiscardedFile', s:cdRed, {}, 'none', {})
+call <sid>hi('gitcommitOverflow', s:cdRed, {}, 'none', {})
+call <sid>hi('gitcommitSummary', s:cdPink, {}, 'none', {})
+call <sid>hi('gitcommitBlank', s:cdPink, {}, 'none', {})
+
+" Lua:
+call <sid>hi('luaFuncCall', s:cdYellow, {}, 'none', {})
+call <sid>hi('luaFuncArgName', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('luaFuncKeyword', s:cdPink, {}, 'none', {})
+call <sid>hi('luaLocal', s:cdPink, {}, 'none', {})
+call <sid>hi('luaBuiltIn', s:cdBlue, {}, 'none', {})
+
+" SH:
+call <sid>hi('shDeref', s:cdLightBlue, {}, 'none', {})
+call <sid>hi('shVariable', s:cdLightBlue, {}, 'none', {})
+
+" SQL:
+call <sid>hi('sqlKeyword', s:cdPink, {}, 'none', {})
+call <sid>hi('sqlFunction', s:cdYellowOrange, {}, 'none', {})
+call <sid>hi('sqlOperator', s:cdPink, {}, 'none', {})
+
+" YAML:
+call <sid>hi('yamlKey', s:cdBlue, {}, 'none', {})
+call <sid>hi('yamlConstant', s:cdBlue, {}, 'none', {})
+
+" Coc Explorer:
+call <sid>hi('CocExplorerIndentLine', s:cdCursorDark, {}, 'none', {})
+EOF
+  fi
+
+   echo "colorscheme codedark" >> $HOME/.vimrc
+}
+#!/bin/bash
+# bumblevim.sh
+#
+# Install a vim environment for better usage as a text code
+#
+# Version 1: Install vim files and venvs to make vim a python code editor
+# Version 2: The script now write needed files without copy from any source
+#
+# Marcos, March 2021
+#
+
+# set destination folder for venvs
+DESTINATION=.venvs
+
+# set script path
+export SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+export DIR="$(dirname "$SCRIPT")"
+
+CURRENT_LANG=0
+
+packages() {
+    echo black
+    echo flake8
+    echo isort
+    echo jedi
+    echo pylint
+}
+
+validate() {
+    if [[ ! $(python --version) ]]
+    then
+        echo "[!] Please install python 3."
+        exit
+    fi
+
+    if [[ ! $(pip --version) ]]
+    then
+        echo "[!] Please install python pip."
+        exit
+    fi
+}
+
+helptext() {
+    echo "
+    -h --help        show this help
+    -i --install     install vim files and some venvs
+    -u --update      update vim files, installed components and venvs
+    -v --vimupdate   update and upgrade vim plugins
+    --venv           install only necessary venvs
+    --csharp         write rc file for csharp lang
+    --codedark       add a custom codedark theme
+    "
+}
+
+install_venvs() {
+    if [[ $(python --version) ]] && [[ $(pip --version) ]]
+    then
+	if [[ ! -d $HOME/$DESTINATION ]]
+	then
+          mkdir $HOME/$DESTINATION
+	fi
+        for package in $( packages )
+        do
+            $(python -m venv $HOME/$DESTINATION/$package)
+            cd $HOME/$DESTINATION/$package
+            echo $(pwd)
+            . bin/activate
+            pip install -U pip
+            pip install $package
+            deactivate
+        done
+    else
+        echo "[!] There's no python interpreter or pip on system!"
+        exit
+    fi
+}
+
+update_venvs() {
+    if [[ $(python --version) ]] && [[ $(pip --version) ]]
+    then
+        for package in $( packages )
+        do
+            cd $HOME/$DESTINATION/$package
+            . bin/activate
+            pip install -U pip
+            pip install -U $package
+            deactivate
+	    cd $DIR
+        done
+    else
+        echo "[!] There's no python interpreter on system!"
+        exit
+    fi
+}
+
+
+
+write_coc_settings() {
+ 
+    $python_version = $(python --version | cut -d " " -f2 | cut -d . -f1-2)
+
+cat << EOF > $HOME/.vim/coc-settings.json
+{
+  // python
+  "python.pythonPath": "python",
+  "python.venvPath": "$HOME/.venvs/",
+
+  // jedi
+  "python.jediPath": "$HOME/.venvs/jedi/lib/python$python_version/site-packages/",
+  "python.jediEnabled": true,
+  "suggest.timeout": 5000,
+
+  // formatting
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath":"$HOME/.venvs/black/bin/black",
+
+  // pylint
+  "python.linting.pylintEnabled": false,
+  "python.linting.pylintPath": "$HOME/.venvs/pylint/bin/pylint",
+
+  // flake8
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Path": "$HOME/.venvs/flake8/bin/flake8",
+
+  // isort
+  "python.sortImports.path": "$HOME/.venvs/isort/bin/isort"
+}
+EOF
+}
+
+write_autoclose_rc() {
+cat << EOF > $HOME/.vim/vimrc/autoclose.vimrc
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AutoClose.vim - Automatically close pair of characters: ( with ), [ with ], { with }, etc.
+" Version: 1.1
+" Author: Thiago Alves <thiago.salves@gmail.com>
+" Maintainer: Thiago Alves <thiago.salves@gmail.com>
+" URL: http://thiagoalves.org
+" Licence: This script is released under the Vim License.
+" Last modified: 08/25/2008
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let s:debug = 1
+
+" check if script is already loaded
+if s:debug == 0 && exists("g:loaded_AutoClose")
+    finish "stop loading the script"
+endif
+let g:loaded_AutoClose = 1
+
+let s:global_cpo = &cpo " store compatible-mode in local variable
+set cpo&vim             " go into nocompatible-mode
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Functions
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! s:GetNextChar()
+    if col('$') == col('.')
+        return "\0"
+    endif
+    return strpart(getline('.'), col('.')-1, 1)
+endfunction
+
+function! s:GetPrevChar()
+    if col('.') == 1
+        return "\0"
+    endif
+    return strpart(getline('.'), col('.')-2, 1)
+endfunction
+
+function! s:IsEmptyPair()
+    let l:prev = s:GetPrevChar()
+    let l:next = s:GetNextChar()
+    if l:prev == "\0" || l:next == "\0"
+        return 0
+    endif
+    return get(s:charsToClose, l:prev, "\0") == l:next
+endfunction
+
+function! s:GetCurrentSyntaxRegion()
+    return synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
+endfunction
+
+function! s:GetCurrentSyntaxRegionIf(char)
+    let l:origin_line = getline('.')
+    let l:changed_line = strpart(l:origin_line, 0, col('.')-1) . a:char . strpart(l:origin_line, col('.')-1)
+    call setline('.', l:changed_line)
+    let l:region = synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name')
+    call setline('.', l:origin_line)
+    return l:region
+endfunction
+
+function! s:IsForbidden(char)
+    let l:result = index(s:protectedRegions, s:GetCurrentSyntaxRegion()) >= 0
+    if l:result
+        return l:result
+    endif
+    let l:region = s:GetCurrentSyntaxRegionIf(a:char)
+    let l:result = index(s:protectedRegions, l:region) >= 0
+    return l:result && l:region == 'Comment'
+endfunction
+
+function! s:InsertPair(char)
+    let l:next = s:GetNextChar()
+    let l:result = a:char
+    if s:running && !s:IsForbidden(a:char) && (l:next == "\0" || l:next !~ '\w')
+        let l:result .= s:charsToClose[a:char] . "\<Left>"
+    endif
+    return l:result
+endfunction
+
+function! s:ClosePair(char)
+    if s:running && s:GetNextChar() == a:char
+        let l:result = "\<Right>"
+    else
+        let l:result = a:char
+    endif
+    return l:result
+endfunction
+
+function! s:CheckPair(char)
+    let l:lastpos = 0
+    let l:occur = stridx(getline('.'), a:char, l:lastpos) == 0 ? 1 : 0
+
+    while l:lastpos > -1
+        let l:lastpos = stridx(getline('.'), a:char, l:lastpos+1)
+        if l:lastpos > col('.')-2
+            break
+        endif
+        if l:lastpos >= 0
+            let l:occur += 1
+        endif
+    endwhile
+
+    if l:occur == 0 || l:occur%2 == 0
+        " Opening char
+        return s:InsertPair(a:char)
+    else
+        " Closing char
+        return s:ClosePair(a:char)
+    endif
+endfunction
+
+function! s:Backspace()
+    if s:running && s:IsEmptyPair()
+        return "\<BS>\<Del>"
+    endif
+    return "\<BS>"
+endfunction
+
+function! s:ToggleAutoClose()
+    let s:running = !s:running
+    if s:running
+        echo "AutoClose ON"
+    else
+        echo "AutoClose OFF"
+    endif
+endfunction
+
+function! s:SetVEAll()
+    let s:save_ve = &ve
+    set ve=all
+    return ""
+endfunction
+
+function! s:RestoreVE()
+    exec "set ve=" . s:save_ve
+    unlet s:save_ve
+    return ""
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Configuration
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" let user define which character he/she wants to autocomplete
+if exists("g:AutoClosePairs") && type(g:AutoClosePairs) == type({})
+    let s:charsToClose = g:AutoClosePairs
+    unlet g:AutoClosePairs
+else
+    let s:charsToClose = {'(': ')', '{': '}', '[': ']', '"': '"', "'": "'"}
+endif
+
+" let user define in which regions the autocomplete feature should not occur
+if exists("g:AutoCloseProtectedRegions") && type(g:AutoCloseProtectedRegions) == type([])
+    let s:protectedRegions = g:AutoCloseProtectedRegions
+    unlet g:AutoCloseProtectedRegions
+else
+    let s:protectedRegions = ["Comment", "String", "Character"]
+endif
+
+" let user define if he/she wants the plugin turned on when vim start. Defaul is YES
+if exists("g:AutoCloseOn") && type(g:AutoCloseOn) == type(0)
+    let s:running = g:AutoCloseOn
+    unlet g:AutoCloseOn
+else
+    let s:running = 1
+endif
+
+" create appropriate maps to defined open/close characters
+for key in keys(s:charsToClose)
+    if key == '"'
+        let open_func_arg = '"\""'
+        let close_func_arg = '"\""'
+    else
+        let open_func_arg = '"' . key . '"'
+        let close_func_arg = '"' . s:charsToClose[key] . '"'
+    endif
+
+    if key == s:charsToClose[key]
+        exec "inoremap <silent> " . key . " <C-R>=<SID>SetVEAll()<CR><C-R>=<SID>CheckPair(" . open_func_arg . ")<CR><C-R>=<SID>RestoreVE()<CR>"
+    else
+        exec "inoremap <silent> " . s:charsToClose[key] . " <C-R>=<SID>SetVEAll()<CR><C-R>=<SID>ClosePair(" . close_func_arg . ")<CR><C-R>=<SID>RestoreVE()<CR>"
+        exec "inoremap <silent> " . key . " <C-R>=<SID>SetVEAll()<CR><C-R>=<SID>InsertPair(" . open_func_arg . ")<CR><C-R>=<SID>RestoreVE()<CR>"
+    endif
+endfor
+exec "inoremap <silent> <BS> <C-R>=<SID>SetVEAll()<CR><C-R>=<SID>Backspace()<CR><C-R>=<SID>RestoreVE()<CR>"
+
+" Define convenient commands
+command! AutoCloseOn :let s:running = 1
+command! AutoCloseOff :let s:running = 0
+command! AutoCloseToggle :call s:ToggleAutoClose()
+EOF
+}
+
+write_bash_rc() {
+cat << EOF > $HOME/.vim/vimrc/bash.vimrc
+au BufRead,BufNewFile *.sh
+    \ set nu |
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
+    " setting horizontal and vertical splits
+    \ set splitbelow |
+    \ set splitright |
+    " end setting
+EOF
+}
+
+write_coc_rc() {
+cat << EOF > $HOME/.vim/vimrc/coc.vimrc
+" May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
+" utf-8 byte sequence
+set encoding=utf-8
+" Some servers have issues with backup files, see #649
+set nobackup
+set nowritebackup
+
+" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+" delays and poor user experience
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved
+set signcolumn=yes
+
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s)
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying code actions to the selected code block
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying code actions at the cursor position
+nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+" Remap keys for apply code actions affect whole buffer
+nmap <leader>as  <Plug>(coc-codeaction-source)
+" Apply the most preferred quickfix action to fix diagnostic on the current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Remap keys for applying refactor code actions
+nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+
+" Run the Code Lens action on the current line
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> to scroll float windows/popups
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Use CTRL-S for selections ranges
+" Requires 'textDocument/selectionRange' support of language server
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings for CoCList
+" Show all diagnostics
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+EOF
+}
+
+write_nerdtree_rc() {
+cat << EOF > $HOME/.vim/vimrc/nerdtree.vimrc
+" ----- NERDTree settings -----
+let g:NERDTreeQuitOnOpen = 1
+let NERDTreeMapActivateNode='<space>'
+
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" Exit Vim if NERDTree is the only window left.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() |
+    \ quit | endif
+
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
+" Open the existing NERDTree on each new tab.
+autocmd BufWinEnter * silent NERDTreeMirror
+
+
+" If more than one window and previous buffer was NERDTree, go back to it.
+autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
+EOF
+}
+
+write_python_rc() {
+cat << EOF > $HOME/.vim/vimrc/python.vimrc
+highlight BadWhitespace ctermbg=red guibg=darkred
+au BufRead,BufNewFile *.py,*.pyw
+    \ set nu |
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
+    " setting horizontal and vertical splits
+    \ set splitbelow |
+    \ set splitright |
+    " end setting
+    \ set fileformat=unix |
+    \ match BadWhitespace /\s\+$/ |
+    \ set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\" |
+    \ set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m |
+    \ nmap <F5> :term python %<CR> |
+
+au BufWritePre *.py
+    \ execute ':CocCommand python.sortImports'
+EOF
+}
+
+write_web_rc() {
+cat << EOF > $HOME/.vim/vimrc/web.vimrc
+" ----- Web development -----
+au BufNewFile,BufRead *.js,*.html,*.css
+    \ set nu |
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+EOF
+}
+
+write_csharp_rc() {
+cat << EOF > $HOME/.vim/vimrc/csharp.vimrc
+au BufRead,BufNewFile *.cs
+    \ set nu |
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set expandtab |
+    \ set autoindent |
+    " setting horizontal and vertical splits
+    \ set splitbelow |
+    \ set splitright |
+    " end setting
+    \ set fileformat=unix |
+    \ set retab |
+EOF
+    sed -i '$ a source $HOME/.vim/vimrc/csharp.vimrc' $HOME/.vimrc
+
+    vim -c ":CocInstall coc-html" -c "sleep 5" -c :qa!
+    
+}
+
+write_all_rc() {
+    write_autoclose_rc
+    write_bash_rc
+    write_coc_rc
+    write_nerdtree_rc
+    write_python_rc
+    write_web_rc
+}
+
+vim_powerup() {
+    if [[ $(vim --version ) ]]
+    then
+        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        write_vimrc
+    if [[ ! -d $HOME/.vim/vimrc ]]
+	then
+	    mkdir -p $HOME/.vim/vimrc
+	fi
+        if [[ $(node --help) || $(npm --help) ]]
+        then
+            write_vimrc
+            write_coc_settings
+            write_all_rc
+            vim -c ":PlugInstall" -c "sleep 5" -c :qa!
+            vim -c ":CocInstall coc-python" -c "sleep 5" -c qa!
+            vim -c ":CocInstall coc-css" -c "sleep 5" -c qa!
+            vim -c ":CocInstall coc-html" -c "sleep 5" -c :qa!
+            clear
+            echo "[!] Plugins install complete."
+	fi
+    fi
+}
+
+vim_update() {
+    vim -c :PluginUpdate -c sleep 5 -c :qa!
+    vim -c :PluginUpgrade -c sleep 5 -c :qa!
+}
+
+vim_backup() {
+    BACKUP=backup-$(date +%d-%m-%Y)
+    if [[ ! -d $BACKUP ]]
+    then
+        mkdir $DIR/$BACKUP
+        if [[ -f $HOME/.vimrc ]]
+        then
+            cp $HOME/.vimrc $DIR/$BACKUP
+        fi
+        if [[ -d $HOME/.vim ]]
+        then
+            cp -r $HOME/.vim $DIR/$BACKUP
+        fi
+    else
+        echo "[!] Backup has already been made."
+    fi
+}
+
+__init__() {
+    vim_backup
+	vim_powerup
+    codedark
+}
+
+case "$1" in
+
+    -i | --install)
+	    __init__
+    ;;
+
+    -u | --update)
+        update_venvs
+        vim_update
+    ;;
+
+    --venv)
+        install_venvs
+    ;;
+
+    --csharp )
+        write_csharp_rc
+    ;;
+
+    --codedark )
+        codedark
+    ;;
+
+    -h | --help)
+        helptext
+    ;;
+
+    *)
+       helptext
+    ;;
+
+esac
