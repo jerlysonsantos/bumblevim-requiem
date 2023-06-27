@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+script1="config.sh"
+script2="themes.sh"
+script3="bumblevim.sh"
+
+# Create the install.sh file
+cat "$script1" "$script2" "$script3" > install.sh
+
+# Make the install.sh file executable
+chmod +x install.sh
+
+# Inform user about the completion of the merge process
+echo "Merging complete. You can now execute 'install.sh'."

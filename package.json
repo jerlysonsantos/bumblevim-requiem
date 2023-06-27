@@ -1,0 +1,23 @@
+{
+  "name": "bumblevim-requiem",
+  "version": "1.0.0",
+  "description": "Yup, this is a script to make vim with visual and minimal functions like vscode...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerlysonsantos/bumblevim-requiem.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jerlysonsantos/bumblevim-requiem/issues"
+  },
+  "homepage": "https://github.com/jerlysonsantos/bumblevim-requiem#readme",
+  "devDependencies": {
+    "husky": "^8.0.0"
+  }
+}
