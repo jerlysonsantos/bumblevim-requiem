@@ -654,35 +654,4 @@ __init__() {
     codedark
 }
 
-case "$1" in
-
-    -i | --install)
-	    __init__
-    ;;
-
-    -u | --update)
-        update_venvs
-        vim_update
-    ;;
-
-    --venv)
-        install_venvs
-    ;;
-
-    --csharp )
-        write_csharp_rc
-    ;;
-
-    --codedark )
-        codedark
-    ;;
-
-    -h | --help)
-        helptext
-    ;;
-
-    *)
-       helptext
-    ;;
-
-esac
+__init__
