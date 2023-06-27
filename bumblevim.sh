@@ -576,16 +576,14 @@ write_all_rc() {
 
 vim_powerup() {
     if [[ $(vim --version ) ]]
-    then
-        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        write_vimrc
-    if [[ ! -d $HOME/.vim/vimrc ]]
-	then
-	    mkdir -p $HOME/.vim/vimrc
-	fi
-        if [[ $(node --help) || $(npm --help) ]]
         then
+            curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+                https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            write_vimrc
+        if [[ ! -d $HOME/.vim/vimrc ]]
+            then
+                mkdir -p $HOME/.vim/vimrc
+        fi
             write_vimrc
             write_coc_settings
             write_all_rc
@@ -595,7 +593,6 @@ vim_powerup() {
             vim -c ":CocInstall coc-html" -c "sleep 5" -c :qa!
             clear
             echo "[!] Plugins install complete."
-	fi
     fi
 }
 
