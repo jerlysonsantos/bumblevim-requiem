@@ -1215,15 +1215,18 @@ vim_powerup() {
             then
                 mkdir -p $HOME/.vim/vimrc
         fi
-            write_vimrc
-            write_coc_settings
-            write_all_rc
-            vim -c ":PlugInstall" -c "sleep 5" -c :qa!
-            vim -c ":CocInstall coc-python" -c "sleep 5" -c qa!
-            vim -c ":CocInstall coc-css" -c "sleep 5" -c qa!
-            vim -c ":CocInstall coc-html" -c "sleep 5" -c :qa!
-            clear
-            echo "[!] Plugins install complete."
+            if [[ $(node --help) || $(npm --help) ]]
+            then
+                write_vimrc
+                write_coc_settings
+                write_all_rc
+                vim -c ":PlugInstall" -c "sleep 5" -c :qa!
+                vim -c ":CocInstall coc-python" -c "sleep 5" -c qa!
+                vim -c ":CocInstall coc-css" -c "sleep 5" -c qa!
+                vim -c ":CocInstall coc-html" -c "sleep 5" -c :qa!
+                clear
+                echo "[!] Plugins install complete."
+	        fi
     fi
 }
 
