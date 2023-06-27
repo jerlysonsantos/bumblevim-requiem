@@ -26,32 +26,6 @@ packages() {
     echo pylint
 }
 
-validate() {
-    if [[ ! $(python --version) ]]
-    then
-        echo "[!] Please install python 3."
-        exit
-    fi
-
-    if [[ ! $(pip --version) ]]
-    then
-        echo "[!] Please install python pip."
-        exit
-    fi
-}
-
-helptext() {
-    echo "
-    -h --help        show this help
-    -i --install     install vim files and some venvs
-    -u --update      update vim files, installed components and venvs
-    -v --vimupdate   update and upgrade vim plugins
-    --venv           install only necessary venvs
-    --csharp         write rc file for csharp lang
-    --codedark       add a custom codedark theme
-    "
-}
-
 install_venvs() {
     if [[ $(python --version) ]] && [[ $(pip --version) ]]
     then
